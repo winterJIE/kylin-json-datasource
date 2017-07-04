@@ -1,18 +1,37 @@
 <query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" has-text-edit-mode="true">
-  <div class="gf-form-inline">
-    <div class="gf-form max-width-8">
-      <select class="gf-form-input" ng-model="ctrl.target.type" ng-options="f as f for f in ['table', 'timeserie']"></select>
+    <div class="gf-form-inline">
+        <label class="gf-form-label width-12">SQL</label>
+        <div class="gf-form max-width-30">
+            <input class="gf-form-input" ng-model="ctrl.target.sql" spellcheck="false"
+                   ng-blur="ctrl.onChangeInternal()"/>
+        </div>
     </div>
-
-    <div class="gf-form" ng-if="ctrl.target.rawQuery">
-      <textarea class="gf-form-input" rows="5" ng-model="ctrl.target.target" spellcheck="false" ng-blur="ctrl.onChangeInternal()" />
+    <div class="gf-form-inline">
+        <label class="gf-form-label width-12">Offset</label>
+        <div class="gf-form max-width-30">
+            <input class="gf-form-input" ng-model="ctrl.target.offset" spellcheck="false"
+                   ng-blur="ctrl.onChangeInternal()"/>
+        </div>
     </div>
-
-    <div ng-if="!ctrl.target.rawQuery">
-      <div class="gf-form">
-        <metric-segment-model property="ctrl.target.target" get-options="ctrl.getOptions()" on-change="ctrl.onChangeInternal()"
-          css-class="tight-form-item-xxlarge"></metric-segment-model>
-      </div>
+    <div class="gf-form-inline">
+        <label class="gf-form-label width-12">Limit</label>
+        <div class="gf-form max-width-30">
+            <input class="gf-form-input" ng-model="ctrl.target.limit" spellcheck="false"
+                   ng-blur="ctrl.onChangeInternal()"/>
+        </div>
     </div>
-  </div>
+    <div class="gf-form-inline">
+        <label class="gf-form-label width-12">Project</label>
+        <div class="gf-form max-width-30">
+            <input class="gf-form-input" ng-model="ctrl.target.project" spellcheck="false"
+                   ng-blur="ctrl.onChangeInternal()"/>
+        </div>
+    </div>
+    <div class="gf-form-inline">
+        <label class="gf-form-label width-12">AcceptPartial</label>
+        <div class="gf-form max-width-30">
+            <select class="gf-form-input" ng-model="ctrl.target.acceptPartial"
+                    ng-options="f as f for f in [true, false]"></select>
+        </div>
+    </div>
 </query-editor-row>

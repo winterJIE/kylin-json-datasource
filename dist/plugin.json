@@ -1,25 +1,26 @@
 {
-  "name": "SimpleJson",
-  "id": "grafana-simple-json-datasource",
+  "name": "kylin",
+  "id": "kylin-json-datasource",
   "type": "datasource",
   "partials": {
-    "config": "public/app/plugins/datasource/simplejson/partials/config.html"
+    "config": "public/app/plugins/datasource/kylin/partials/config.html"
   },
   "metrics": true,
-  "annotations": true,
+  "annotations": false,
   "info": {
-    "description": "simple json datasource",
+    "description": "kylin datasource",
     "author": {
-      "name": "Grafana Labs",
+      "name": "lijie",
+      "email": "winterjie123@gmail.com",
       "url": "https://grafana.com"
     },
     "logos": {
-      "small": "img/simpleJson_logo.svg",
-      "large": "img/simpleJson_logo.svg"
+      "small": "img/logo.png",
+      "large": "img/logo.png"
     },
     "links": [
-      {"name": "GitHub", "url": "https://github.com/grafana/simple-json-datasource"},
-      {"name": "MIT License", "url": "https://github.com/grafana/simple-json-datasource/blob/master/LICENSE"}
+      {"name": "GitHub", "url": "https://github.com/winterJIE/kylin-json-datasource"},
+      {"name": "MIT License", "url": "https://github.com/winterJIE/kylin-json-datasource/blob/master/LICENSE"}
     ],
     "version": "1.3.3",
     "updated": "2017-05-10"

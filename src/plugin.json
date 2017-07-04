@@ -6,7 +6,7 @@
     "config": "public/app/plugins/datasource/kylin/partials/config.html"
   },
   "metrics": true,
-  "annotations": true,
+  "annotations": false,
   "info": {
     "description": "kylin datasource",
     "author": {

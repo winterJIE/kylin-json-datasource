@@ -1,4 +1,4 @@
-## Simple JSON Datasource - a generic backend datasource
+## kylin Datasource
 
 More documentation about datasource plugins can be found in the [Docs](https://github.com/grafana/grafana/blob/master/docs/sources/plugins/developing/datasources.md).
 
@@ -159,6 +159,9 @@ This plugin requires node 6.10.0
 `npm run build`
 
 ### Changelog
+
+1.3.3
+ - Adds support for basic authentication
 
 1.2.4
  - Add support returning sets in the search endpoint
