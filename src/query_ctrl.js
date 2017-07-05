@@ -12,21 +12,23 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
 		this.target.limit = this.target.limit || 50000;
 		this.target.project = this.target.project || 'DEFAULT';
 		this.target.acceptPartial = this.target.acceptPartial || true;
-		// this.target.target = this.target.target || 'select metric';
-		// this.target.type = this.target.type || 'timeserie';
+		this.target.target = this.target.target || 'the name of this sql to show in legend';
 	}
 
 	getOptions() {
+		debugger;
 		return this.datasource.metricFindQuery(this.target)
 		.then(this.uiSegmentSrv.transformToSegments(false));
 		// Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
 	}
 
 	toggleEditorMode() {
+		debugger;
 		this.target.rawQuery = !this.target.rawQuery;
 	}
 
 	onChangeInternal() {
+		debugger;
 		this.panelCtrl.refresh(); // Asks the panel to refresh data.
 	}
 }

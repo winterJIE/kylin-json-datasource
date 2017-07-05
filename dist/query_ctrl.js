@@ -73,25 +73,27 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 					_this.target.limit = _this.target.limit || 50000;
 					_this.target.project = _this.target.project || 'DEFAULT';
 					_this.target.acceptPartial = _this.target.acceptPartial || true;
-					// this.target.target = this.target.target || 'select metric';
-					// this.target.type = this.target.type || 'timeserie';
+					_this.target.target = _this.target.target || 'the name of this sql to show in legend';
 					return _this;
 				}
 
 				_createClass(GenericDatasourceQueryCtrl, [{
 					key: 'getOptions',
 					value: function getOptions() {
+						debugger;
 						return this.datasource.metricFindQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
 						// Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
 					}
 				}, {
 					key: 'toggleEditorMode',
 					value: function toggleEditorMode() {
+						debugger;
 						this.target.rawQuery = !this.target.rawQuery;
 					}
 				}, {
 					key: 'onChangeInternal',
 					value: function onChangeInternal() {
+						debugger;
 						this.panelCtrl.refresh(); // Asks the panel to refresh data.
 					}
 				}]);

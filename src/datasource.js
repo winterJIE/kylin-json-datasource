@@ -3,7 +3,6 @@ import _ from "lodash";
 export class GenericDatasource {
 
 	constructor(instanceSettings, $q, backendSrv, templateSrv) {
-		console.log(arguments);
 		this.type = instanceSettings.type;
 		this.url = instanceSettings.url;
 		this.name = instanceSettings.name;
@@ -17,35 +16,73 @@ export class GenericDatasource {
 	}
 
 	query(options) {
-		console.log('query options', options);
-		// var query = this.buildQueryParameters(options);
-		// query.targets = query.targets.filter(t => !t.hide);
-		//
-		// if (query.targets.length <= 0) {
-		// 	return this.q.when({data: []});
-		// }
+		const targets = options.targets;
 
-		var query = {
+		if (!(targets instanceof Array) || targets.length <= 0) {
+			return this.q.when({data: []});
+		}
+
+		const url = '/kylin/api/query';
+
+		const query = {
 			sql: 'select hour_start,count(*) from db_channel.channel group by hour_start',
 			limit: 1000,
 			offset: 0,
 			project: 'streaming',
 			acceptPartial: true
 		};
-		var target = options.target;
-		if(target instanceof Array && target.length > 0) {
-			query = target[0];
+		const iterablePromise = [];
+
+		for (let target of targets) {
+
+			const queryData = {
+				sql: target.sql,
+				limit: target.limit,
+				offset: target.offset,
+				project: target.project,
+				acceptPartial: target.acceptPartial
+			};
+
+			iterablePromise.push(this.getPromise(url, queryData));
 		}
 
-		console.log('query data', query);
-		const result = this.backendSrv.datasourceRequest({
-			url: this.url + '/kylin/api/query',
+		return Promise.all(iterablePromise).then(function (results) {
+
+			if (!results || results.length <= 0) {
+				return [];
+			}
+
+			const renderedData = [];
+
+			for(let i = 0; i< results.length; i++) {
+
+				const result = results[i];
+				const dataPointArray = [];
+				const res = result.data.results;
+
+				for (let iRes of res) {
+					dataPointArray.push([parseInt(iRes[1], 10), new Date(iRes[0]).getTime()]);
+				}
+
+				renderedData.push({
+					datapoints: dataPointArray,
+					target: targets[i].target
+				});
+			}
+
+			return {data: renderedData};
+		}).catch(reason => {
+			console.log(reason)
+		});
+	}
+
+	getPromise(url, query) {
+		return this.backendSrv.datasourceRequest({
+			url: this.url + url,
 			data: query,
 			method: 'POST',
 			headers: this.headers
-		});
-		console.log('result', result);
-		return result;
+		})
 	}
 
 	testDatasource() {
@@ -60,38 +97,37 @@ export class GenericDatasource {
 		});
 	}
 
-	annotationQuery(options) {
-		console.log('annotation query', options);
-		debugger;
-		var query = this.templateSrv.replace(options.annotation.query, {}, 'glob');
-		var annotationQuery = {
-			range: options.range,
-			annotation: {
-				name: options.annotation.name,
-				datasource: options.annotation.datasource,
-				enable: options.annotation.enable,
-				iconColor: options.annotation.iconColor,
-				query: query
-			},
-			rangeRaw: options.rangeRaw
-		};
-
-		return this.backendSrv.datasourceRequest({
-			url: this.url + '/annotations',
-			method: 'POST',
-			headers: this.headers,
-			data: annotationQuery
-		}).then(result => {
-			return result.data;
-		});
-	}
+	// annotationQuery(options) {
+	// 	console.log('annotation query', options);
+	// 	debugger;
+	// 	var query = this.templateSrv.replace(options.annotation.query, {}, 'glob');
+	// 	var annotationQuery = {
+	// 		range: options.range,
+	// 		annotation: {
+	// 			name: options.annotation.name,
+	// 			datasource: options.annotation.datasource,
+	// 			enable: options.annotation.enable,
+	// 			iconColor: options.annotation.iconColor,
+	// 			query: query
+	// 		},
+	// 		rangeRaw: options.rangeRaw
+	// 	};
+	//
+	// 	return this.backendSrv.datasourceRequest({
+	// 		url: this.url + '/annotations',
+	// 		method: 'POST',
+	// 		headers: this.headers,
+	// 		data: annotationQuery
+	// 	}).then(result => {
+	// 		return result.data;
+	// 	});
+	// }
 
 	metricFindQuery(options) {
 		console.log('metricFindQuery', options);
-		debugger;
 
-		var target = typeof (options) === "string" ? options : options.target;
-		var interpolated = {
+		const target = typeof (options) === "string" ? options : options.target;
+		const interpolated = {
 			target: this.templateSrv.replace(target, null, 'regex')
 		};
 
@@ -105,7 +141,6 @@ export class GenericDatasource {
 
 	mapToTextValue(result) {
 		console.log('mapToTextValue', result);
-		debugger;
 
 		return _.map(result.data, (d, i) => {
 			if (d && d.text && d.value) {
@@ -117,26 +152,26 @@ export class GenericDatasource {
 		});
 	}
 
-	buildQueryParameters(options) {
-		//remove placeholder targets
-		console.log('buildQueryParameters', options);
-		debugger;
-
-		options.targets = _.filter(options.targets, target => {
-			return target.target !== 'select metric';
-		});
-
-		var targets = _.map(options.targets, target => {
-			return {
-				target: this.templateSrv.replace(target.target),
-				refId: target.refId,
-				hide: target.hide,
-				type: target.type || 'timeserie'
-			};
-		});
-
-		options.targets = targets;
-
-		return options;
-	}
+	// buildQueryParameters(options) {
+	// 	//remove placeholder targets
+	// 	console.log('buildQueryParameters', options);
+	// 	debugger;
+	//
+	// 	options.targets = _.filter(options.targets, target => {
+	// 		return target.target !== 'select metric';
+	// 	});
+	//
+	// 	var targets = _.map(options.targets, target => {
+	// 		return {
+	// 			target: this.templateSrv.replace(target.target),
+	// 			refId: target.refId,
+	// 			hide: target.hide,
+	// 			type: target.type || 'timeserie'
+	// 		};
+	// 	});
+	//
+	// 	options.targets = targets;
+	//
+	// 	return options;
+	// }
 }
